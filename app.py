@@ -25,22 +25,40 @@ EXAMPLES = {
 
 st.title("👶 우리 아이 언어 발달 비교 분석기")
 
-# --- 1. 아이 정보 입력 (수정된 버전) ---
+import datetime
+
+# --- 1. 아이 정보 입력 (자동 연령 계산 버전) ---
 st.subheader("📝 1. 아이 정보를 입력해주세요")
-c1, c2, c3, c4 = st.columns([2, 1, 1, 2]) # 칸 너비를 적절히 조절
+c1, c2, c3, c4 = st.columns([2, 1, 1, 2])
 
 with c1:
     child_name = st.text_input("아이 이름", "엘리자베스")
 with c2:
-    # 연도 선택 (올해부터 10년 전까지)
-    import datetime
     this_year = datetime.date.today().year
-    birth_year = st.selectbox("출생 연도", range(this_year, this_year - 11, -1))
+    birth_year = st.selectbox("출생 연도", range(this_year, this_year - 11, -1), index=2) # 기본값 2년 전
 with c3:
-    # 월 선택
-    birth_month = st.selectbox("출생 월", range(1, 13))
+    birth_month = st.selectbox("출생 월", range(1, 13), index=datetime.date.today().month - 1)
+
+# --- [자동 연령 계산 로직] ---
+today = datetime.date.today()
+# 대략적인 개월 수 계산
+total_months = (today.year - birth_year) * 12 + (today.month - birth_month)
+
+# 개월 수에 따른 비교군 자동 설정
+if total_months < 24:
+    auto_age_index = 0  # 24개월 미만
+elif 24 <= total_months < 36:
+    auto_age_index = 1  # 2~3세
+elif 36 <= total_months < 48:
+    auto_age_index = 2  # 3~4세
+else:
+    auto_age_index = 3  # 4~5세
+
 with c4:
-    age_group = st.selectbox("비교군(또래 연령대) 선택", ["24개월 미만", "2~3세", "3~4세", "4~5세"])
+    # index를 auto_age_index로 설정하여 자동 선택되게 함
+    age_groups = ["24개월 미만", "2~3세", "3~4세", "4~5세"]
+    age_group = st.selectbox("비교군(또래 연령대) 자동 선택", age_groups, index=auto_age_index)
+    st.caption(f"💡 현재 아이는 약 **{total_months}개월**입니다.")
 
 st.divider()
 
