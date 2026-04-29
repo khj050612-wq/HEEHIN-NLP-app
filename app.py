@@ -14,14 +14,32 @@ def load_kiwi():
 
 kiwi = load_kiwi()
 
-# 2. 시나리오별 데이터 설정
-EXAMPLES = {
-    "A": "엄마 사탕 줘. 아빠 이거 뭐야? 멍멍이 예쁘다. 나 우유 먹어. 선생님 안녕. 뽀로로 보여줘. 이거 내 거야. 아기 자요. 물 많이 줘. 엄마 같이 가.", 
-    "B": "엄마. 사탕. 물. 우유. 까까. 신발. 사과. 아빠. 멍멍이. 아기.", 
-    "C": "사탕 줄까? 사탕 줄까? 뽀로로가 나타났다. 뽀로로가 나타났다. 이거 뭐야? 이거 뭐야?" 
+# 2. 연령별/케이스별 맞춤형 예시 데이터 데이터셋
+# 연령별로 발화의 수준을 다르게 설정했습니다.
+AGE_SPECIFIC_EXAMPLES = {
+    "24개월 미만": {
+        "A": "엄마 물. 아빠 가. 이거 뭐야? 멍멍이. 까까 줘. 어부바. 맘마 먹어. 빠빠이. 아니야. 나 이거.",
+        "B": "엄마. 아빠. 물. 응. 어. 이거. 저거. 맘마. 쉬. 까까.",
+        "C": "물. 물. 물. 이거 뭐야? 이거 뭐야? 엄마 엄마 엄마."
+    },
+    "2~3세": {
+        "A": "엄마 사탕 줘. 아빠 이거 뭐야? 멍멍이 예쁘다. 나 우유 먹어. 선생님 안녕. 뽀로로 보여줘. 이거 내 거야. 아기 자요. 물 많이 줘. 엄마 같이 가.",
+        "B": "엄마. 사탕. 물. 우유. 까까. 신발. 사과. 아빠. 멍멍이. 아기.",
+        "C": "사탕 줄까? 사탕 줄까? 뽀로로가 나타났다. 뽀로로가 나타났다. 이거 뭐야? 이거 뭐야?"
+    },
+    "3~4세": {
+        "A": "엄마 나 사탕 먹고 싶어. 아빠 오늘 어디 가요? 멍멍이가 멍멍 짖어요. 선생님이랑 같이 놀아요. 나도 비행기 타고 싶어. 저기 커다란 나무 봐봐. 동생이 울어서 속상해. 사과가 너무 달콤해요. 엄마랑 시장 가서 수박 사자.",
+        "B": "사과 줘. 우유 먹어. 신발 신어. 아빠 와. 엄마 가. 멍멍이 예뻐. 사탕 좋아. 학교 가. 아기 자. 빵 먹어.",
+        "C": "학교 가자 학교 가자. 사탕 먹어 사탕 먹어. 엄마가 그랬어 엄마가 그랬어. 뽀로로 뽀로로 뽀로로."
+    },
+    "4~5세": {
+        "A": "엄마 어제 유치원에서 친구랑 모래놀이 했어. 아빠 우리 내일은 놀이공원 가요? 나는 커서 멋진 소방관이 될 거야. 저기 빨간 자동차가 아주 빠르게 달려가요. 할머니가 주신 과자가 제일 맛있어. 선생님이 오늘 착하다고 칭찬해 주셨어.",
+        "B": "엄마 사탕 줘. 아빠 이거 뭐야. 멍멍이 예뻐. 나 우유 먹어. 이거 내 거야. 아기 자요. 물 줘. 엄마 가. 신발 신어. 까까 먹어.",
+        "C": "내일 가자 내일 가자 내일 가자. 소방관 될 거야 소방관 될 거야. 착하다고 했어 착하다고 했어."
+    }
 }
 
-# 3. 메인 타이틀 및 서비스 목적 (회색 멘트)
+# 3. 메인 타이틀 및 서비스 목적
 st.title("👶 우리 아이 언어 발달 비교 분석기")
 st.caption("""
 본 서비스는 인공지능 기술을 활용하여 학부모가 아이의 발화 데이터를 객관적으로 확인하고,  
@@ -65,19 +83,20 @@ if "input_text" not in st.session_state:
 if "current_case" not in st.session_state:
     st.session_state.current_case = "user"
 
-st.write("💡 아래 버튼을 누르면 각 발달 유형별 예시 데이터가 자동으로 채워집니다.")
+st.write(f"💡 **[{age_group}]** 기준 예시 데이터가 자동으로 채워집니다.")
 col_ex1, col_ex2, col_ex3 = st.columns(3)
 
+# 버튼 클릭 시 현재 선택된 age_group에 맞는 문장을 가져옴
 if col_ex1.button("✅ 정상 발달 예시"):
-    st.session_state.input_text = EXAMPLES["A"]
+    st.session_state.input_text = AGE_SPECIFIC_EXAMPLES[age_group]["A"]
     st.session_state.current_case = "normal"
     st.rerun()
 if col_ex2.button("⚠️ 발달 지체 예시"):
-    st.session_state.input_text = EXAMPLES["B"]
+    st.session_state.input_text = AGE_SPECIFIC_EXAMPLES[age_group]["B"]
     st.session_state.current_case = "delay"
     st.rerun()
 if col_ex3.button("🧩 자폐 성향 예시"):
-    st.session_state.input_text = EXAMPLES["C"]
+    st.session_state.input_text = AGE_SPECIFIC_EXAMPLES[age_group]["C"]
     st.session_state.current_case = "autism"
     st.rerun()
 
@@ -103,7 +122,6 @@ if st.button("🚀 발달 수준 비교 분석 시작"):
         v_c = len([t for t in tokens if t.startswith('VV')])
         a_c = len([t for t in tokens if t.startswith('VA')])
         
-        # 그래프 데이터 설정
         labels = ["명사", "동사", "형용사"]
         child_values = [n_c, v_c, a_c]
         norm_values = [norm_data[age_group]["명사"], norm_data[age_group]["동사"], norm_data[age_group]["형용사"]]
@@ -117,33 +135,21 @@ if st.button("🚀 발달 수준 비교 분석 시작"):
         fig.update_layout(height=400, margin=dict(t=50, b=0, l=0, r=0))
         st.plotly_chart(fig, use_container_width=True)
 
-        # 7. 맞춤형 결과 분석 메시지 (부드러운 버전)
+        # 7. 맞춤형 결과 분석 메시지
         st.divider()
         st.write("#### ✨ 우리 아이 발달 특성 요약")
 
         if st.session_state.current_case == "autism":
             st.info("💡 **확인이 필요한 발화 패턴이 관찰됩니다**")
-            st.write("""
-            상대방의 말을 그대로 따라 하거나 특정 문장을 반복하는 모습이 보입니다.  
-            이러한 **반향어** 패턴은 아이가 의사소통의 의도를 찾아가는 과정일 수 있으나,  
-            조금 더 정확한 이해를 위해 전문가와 편안하게 상담해 보시는 것을 추천드려요.
-            """)
+            st.write("상대방의 말을 그대로 따라 하거나 특정 문장을 반복하는 모습이 보입니다. 전문가와 편안하게 상담해 보시는 것을 추천드려요.")
         elif st.session_state.current_case == "delay":
             st.warning("💡 **문장 확장 연습이 도움이 될 수 있어요**")
-            st.write(f"""
-            현재 {child_name}는 이름이나 사물(명사)을 말하는 것에 익숙해진 단계인 것 같아요.  
-            '사과'라고 말할 때 **'사과 먹자', '사과 맛있다'**처럼 움직임이나 상태를 나타내는 말을  
-            조금 더 섞어서 들려주시면 문장이 쑥쑥 자라날 거예요.
-            """)
+            st.write(f"현재 {child_name}는 낱말 나열 단계에 머물러 있는 것 같습니다. 동사와 형용사를 섞어서 들려주시면 문장이 쑥쑥 자라날 거예요.")
         elif st.session_state.current_case == "normal":
             st.success("💡 **또래와 비슷하게 무럭무럭 자라고 있어요**")
-            st.write(f"""
-            명사, 동사, 형용사를 골고루 사용하며 예쁘게 말하고 있네요!  
-            지금처럼 {child_name}의 말에 귀 기울여 주시고, 풍부한 반응을 보여주시는 것만으로도  
-            아이에겐 가장 좋은 언어 교육이 됩니다.
-            """)
+            st.write(f"명사, 동사, 형용사를 골고루 사용하며 예쁘게 말하고 있네요! 지금처럼 풍부한 반응을 보여주세요.")
         else:
-            st.write("입력하신 문장을 바탕으로 분석한 결과입니다. 구체적인 수치는 상단 그래프를 참고해 주세요.")
+            st.write("입력하신 문장을 바탕으로 분석한 결과입니다. 상단 그래프의 비중을 참고해 주세요.")
             
     else:
         st.error("분석할 문장을 입력해주세요.")
