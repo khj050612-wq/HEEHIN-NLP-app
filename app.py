@@ -108,24 +108,36 @@ if st.button("🚀 발달 수준 비교 분석 시작"):
         fig.update_layout(height=400, margin=dict(t=50, b=0, l=0, r=0))
         st.plotly_chart(fig, use_container_width=True)
 
-        # --- 4. 분석 결과 메시지 (고정 시나리오) ---
+        # --- 4. 분석 결과 메시지 (부드러운 버전) ---
         st.divider()
         verb_ratio = (v_c / total * 100)
         unique_sentences = set([s.strip() for s in user_input.split('.') if s.strip()])
         sentence_count = len([s.strip() for s in user_input.split('.') if s.strip()])
         repetition_ratio = (1 - len(unique_sentences) / sentence_count) if sentence_count > 0 else 0
 
+        st.write("#### ✨ 우리 아이 발달 특성 요약") # 글씨 크기를 적당히 조절
+
         if repetition_ratio > 0.3:
-            st.error("### 🧩 [결과] 특이 발화 패턴(반향어/반복) 관찰")
-            st.write("상대방의 말을 그대로 따라 하거나 특정 문장을 반복하는 양상이 두드러집니다. 이는 자폐 스펙트럼의 대표적 특징인 '반향어'일 가능성이 있으니 전문 기관의 정밀 검사를 권장합니다.")
+            st.info("💡 **확인이 필요한 발화 패턴이 관찰됩니다**")
+            st.write("""
+            상대방의 말을 그대로 따라 하거나 특정 문장을 반복하는 모습이 보입니다.  
+            이러한 **반향어** 패턴은 아이가 의사소통의 의도를 찾아가는 과정일 수 있으나,  
+            조금 더 정확한 이해를 위해 전문가와 편안하게 상담해 보시는 것을 추천드려요.
+            """)
         elif verb_ratio < 15:
-            st.warning("### ⚠️ [결과] 언어 발달 지체(낱말 나열 수준) 의심")
-            st.write("현재 문장 형태가 아닌 명사 위주의 낱말 나열 단계에 머물러 있습니다. 또래에 비해 동사 활용도가 현저히 낮으므로, 움직임과 상태를 나타내는 표현을 의도적으로 들려주어야 합니다.")
+            st.warning("💡 **문장 확장 연습이 도움이 될 수 있어요**")
+            st.write(f"""
+            현재 {child_name}는 이름이나 사물(명사)을 말하는 것에 익숙해진 단계인 것 같아요.  
+            '사과'라고 말할 때 **'사과 먹자', '사과 맛있다'**처럼 움직임이나 상태를 나타내는 말을  
+            조금 더 섞어서 들려주시면 문장이 쑥쑥 자라날 거예요.
+            """)
         else:
-            st.success("### ✅ [결과] 연령 수준에 적합한 정상 발달")
-            st.write("명사, 동사, 형용사가 골고루 사용되고 있으며 문장 구성 능력이 또래 수준에 부합합니다. 아이의 요구에 적절히 반응하며 자연스러운 대화를 지속해 주세요.")
-    else:
-        st.error("분석할 문장을 입력해주세요.")
+            st.success("💡 **또래와 비슷하게 무럭무럭 자라고 있어요**")
+            st.write(f"""
+            명사, 동사, 형용사를 골고루 사용하며 예쁘게 말하고 있네요!  
+            지금처럼 {child_name}의 말에 귀 기울여 주시고, 풍부한 반응을 보여주시는 것만으로도  
+            아이에겐 가장 좋은 언어 교육이 됩니다.
+            """)
 
 st.divider()
 st.info("⚠️ 해당 분석은 수업 과제용 가상 연령별 수치를 기준으로 분석한 결과입니다.")
