@@ -30,7 +30,7 @@ st.subheader("📝 1. 아이 정보를 입력해주세요")
 c1, c2, c3, c4 = st.columns([2, 1, 1, 2]) # 칸 너비를 적절히 조절
 
 with c1:
-    child_name = st.text_input("아이 이름", "O O O")
+    child_name = st.text_input("아이 이름", "엘리자베스")
 with c2:
     # 연도 선택 (올해부터 10년 전까지)
     import datetime
