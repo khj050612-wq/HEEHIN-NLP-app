@@ -1,14 +1,34 @@
 import streamlit as st
+from kiwipiepy import Kiwi
 
-st.title("🍎 초간단 문장 분석기")
-st.info("비전공자도 할 수 있는 자연어 처리 과제입니다.")
+# 한국어 형태소 분석기 초기화
+kiwi = Kiwi()
 
-text = st.text_area("분석할 문장을 입력하세요", "여기에 문장을 입력하면 분석이 시작됩니다.")
+st.title("🔍 한국어 정밀 문장 분석기")
+st.info("단순 띄어쓰기가 아닌 어근, 어미, 고유명사를 구분합니다.")
 
-if st.button("분석하기"):
-    words = text.split()
-    st.success(f"전체 단어 수: {len(words)}개")
-    st.success(f"전체 글자 수(공백 포함): {len(text)}자")
+user_input = st.text_area("문장을 입력하세요", "철수가 학교에 가고 있어요.")
+
+if st.button("정밀 분석 시작"):
+    # Kiwi를 사용하여 형태소 분석
+    result = kiwi.analyze(user_input)
     
-    st.subheader("사용한 단어 목록")
-    st.write(list(set(words)))
+    # 분석된 결과에서 단어와 품사 추출
+    tokens = []
+    for res in result:
+        for token in res[0]:
+            # 고유명사(NNP), 일반명사(NNG), 어근(XR), 어미(E..) 등을 구분해서 보여줌
+            tokens.append({"단어": token.form, "품사": token.tag})
+    
+    st.subheader("📝 형태소 분석 결과")
+    st.table(tokens)
+    
+    # 간단한 요약
+    st.subheader("💡 분석 요약")
+    nnps = [t['단어'] for t in tokens if t['품사'] == 'NNP']
+    nngs = [t['단어'] for t in tokens if t['품사'] == 'NNG']
+    
+    if nnps:
+        st.write(f"📍 **고유명사(이름 등):** {', '.join(set(nnps))}")
+    if nngs:
+        st.write(f"📚 **일반명사(사물 등):** {', '.join(set(nngs))}")
