@@ -25,14 +25,21 @@ EXAMPLES = {
 
 st.title("👶 우리 아이 언어 발달 비교 분석기")
 
-# --- 1. 아이 정보 입력 ---
+# --- 1. 아이 정보 입력 (수정된 버전) ---
 st.subheader("📝 1. 아이 정보를 입력해주세요")
-c1, c2, c3 = st.columns(3)
+c1, c2, c3, c4 = st.columns([2, 1, 1, 2]) # 칸 너비를 적절히 조절
+
 with c1:
-    child_name = st.text_input("아이 이름", "우리 아이")
+    child_name = st.text_input("아이 이름", "O O O")
 with c2:
-    birth_date = st.date_input("출생년월일")
+    # 연도 선택 (올해부터 10년 전까지)
+    import datetime
+    this_year = datetime.date.today().year
+    birth_year = st.selectbox("출생 연도", range(this_year, this_year - 11, -1))
 with c3:
+    # 월 선택
+    birth_month = st.selectbox("출생 월", range(1, 13))
+with c4:
     age_group = st.selectbox("비교군(또래 연령대) 선택", ["24개월 미만", "2~3세", "3~4세", "4~5세"])
 
 st.divider()
